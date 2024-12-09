@@ -4,6 +4,7 @@ import './index.scss'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Welcome from './pages/Welcome.jsx';
 import Games from './pages/Games.jsx';
+import BackendViewWrap from './pages/BackendView.jsx';
 import WebApp from '@twa-dev/sdk';
 import { AppContextProvider } from './context/AppContext.jsx';
 
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')).render(
         <Routes>
           <Route path="/" element={<Welcome/>} />
           <Route path="/play" element={<Games/>} /> 
+          <Route path="/backend-view" element={<BackendViewWrap/>} /> 
         </Routes>
       </BrowserRouter> 
     </StrictMode>
