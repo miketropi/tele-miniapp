@@ -26,7 +26,8 @@ const __KOMBATTEM = [
 ];
 
 export default function Games() {
-  const { user } = useAppContext(); 
+  const { user, fn } = useAppContext(); 
+  const { onUpdateTurn, onAddPoint } = fn;
   const [startAfter, setStartAfter] = useState(5);
   const [gameStart, setGameStart] = useState(false);
   const [timerIngame, setTimerIngame] = useState(0);
@@ -35,6 +36,10 @@ export default function Games() {
   const [point, setPoint] = useState(0);
 
   const $panelRef = useRef();
+
+  useEffect(() => {
+    onUpdateTurn(user.turn - 1);
+  }, [])
 
   useEffect(() => {
     if(startAfter <= 0) {
@@ -54,6 +59,7 @@ export default function Games() {
     if(gameStart != true) return;
     if(timerIngame == 30) {
       setEndGame(true);
+      onAddPoint(point);
       return;
     }
 
@@ -106,7 +112,13 @@ export default function Games() {
       {
         (() => {
           return endGame ? <>
-            Your points { point }
+            <p>Your points { point }</p>
+            <div className="__endgame-action">
+              {
+                user.turn > 0 && <button className="button">Chơi lại ({ user.turn })</button>
+              }
+              <Link className="button" to="/">Trở về</Link>
+            </div>
           </> : <>
             {
               gameStart 

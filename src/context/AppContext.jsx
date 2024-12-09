@@ -1,33 +1,28 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { db } from "../services/firebase";
-import { doc, collection, query, where, getDocs, setDoc } from 'firebase/firestore/lite';
+
+import { getUser, findUserByTeleID, addUser, updateUser, listennerDoc } from '../services/api'
 
 const AppContext = createContext(null);
 
 const AppContextProvider = ({ children, WebApp }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null); 
+  // alert(JSON.stringify(WebApp.initDataUnsafe?.user?.id))
   useEffect(() => {
     const __query = async () => {
-      const q = query(collection(db, "tele_users"), where("teleuid", "==", WebApp.initDataUnsafe?.user?.id ?? ''));
-      const querySnapshot = await getDocs(q);
-      
-      if(querySnapshot.empty == true) {
-        await addNewUser(WebApp.initDataUnsafe?.user);
-      } else {
-        querySnapshot.forEach((doc) => {
-          console.log(doc.id, doc.data());
-          if(!doc) return;
-  
-          let res = doc.data();
-          res.__id = doc.id;
-          setUser(res);
-        });
+      let __u = await findUserByTeleID(WebApp.initDataUnsafe?.user?.id);
+      // alert('userExists', JSON.stringify(userExists), WebApp.initDataUnsafe?.user?.id)
+      if(__u == false) {
+        __u = await addNewUser(WebApp.initDataUnsafe?.user);
+        setUser(__u);
       }
-      
-    }
 
+      setUser(__u);
+      listennerDoc('tele_users', __u.__id, (id, data) => {
+        // alert(JSON.stringify(user));
+        setUser({ ...data, __id: id });
+      })
+    }
     __query();
-    return;
   }, [])
 
   const addNewUser = async (teleUser) => {
@@ -37,14 +32,31 @@ const AppContextProvider = ({ children, WebApp }) => {
       teleuid: teleUser?.id,
       turn: 3,
     }
-    await setDoc(doc(db, "tele_users", `id_${ teleUser?.id }`), newUser);
-    setUser({ ...newUser, __id: `id_${ teleUser?.id }` }) 
+    const uid = await addUser(newUser);
+    return { ...newUser, __id: uid }
+  }
+
+  const onUpdateTurn = async (turn) => {
+    await updateUser(user.__id, {
+      turn
+    })
+  }
+
+  const onAddPoint = async (point) => {
+    let newPoint = parseInt(point) + user.point;
+    await updateUser(user.__id, {
+      point: newPoint,
+    })
   }
 
   const value = {
     version: '1.0.0',
     teleUser: WebApp.initDataUnsafe,
-    user, setUser 
+    user, setUser,
+    fn: {
+      onUpdateTurn,
+      onAddPoint,
+    }
   }
 
   return <AppContext.Provider value={ value }>

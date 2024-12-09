@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: black;
-  background-color: #242424;
+  // background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -125,6 +125,15 @@ button:focus-visible {
     -webkit-transform: translate(-50%, -50%);
     width: 50%;
     z-index: 6;
+    text-align: center; 
+    
+    .not-turn {
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background: rgba(17, 11, 192, 0.76);
+      padding: 1em;
+    } 
 
     img {
       width: 100%;
@@ -303,4 +312,21 @@ button:focus-visible {
   z-index: 4;
   font-weight: bold;
   color: white;
+}
+
+.__endgame-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  .button {
+    background: #e950f7;
+    font-size: 12px;
+    font-weight: bold;
+
+    &:hover {
+      color: white;
+    }
+  }
 }

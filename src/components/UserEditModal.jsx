@@ -5,7 +5,8 @@ import Modal from "./Modal";
 const __DEFAULT_U = null;
 
 export default function UserEditModal() {
-  const { users, userEdit, setUserEdit, modalEditActive, setModalEditActive } = useBackendViewContext();
+  const { users, userEdit, setUserEdit, modalEditActive, setModalEditActive, fn } = useBackendViewContext();
+  const { onUpdateUser } = fn;
   const [u, setU] = useState(null);
 
   useEffect(() => {
@@ -19,8 +20,7 @@ export default function UserEditModal() {
   }, [userEdit])
 
   const onUpdate = (value, name) => {
-    let _u = { ...u };
-    _u[name] = value;
+    let _u = { ...u, [name]: value };
     setU(_u);
   }
 
@@ -41,17 +41,29 @@ export default function UserEditModal() {
               <div style={{ fontSize: `10px` }}>
                 { JSON.stringify(tele_userinfo_full) }
               </div>
+              {/* { JSON.stringify(u) } */}
             </div>
             <fieldset>
               <legend>Point</legend>
-              <input type="number" value={ u?.point } onChange={ e => { onUpdate(e.value, 'point') } } />
+              <input type="number" value={ u?.point } onChange={ e => { onUpdate(e.target.value, 'point') } } />
             </fieldset>
             <fieldset>
               <legend>Turn</legend>
-              <input type="number" value={ u?.turn } onChange={ e => { onUpdate(e.value, 'turn') } } />
+              <input type="number" value={ u?.turn } onChange={ e => { onUpdate(e.target.value, 'turn') } } />
             </fieldset>
             <div className="u-actions">
-              <button type="button" className="button">Update</button>
+              <button type="button" className="button" onClick={ async e => {
+                e.preventDefault();
+                
+                await onUpdateUser(u.__id, {
+                  point: parseInt(u.point),
+                  turn: parseInt(u.turn),
+                });
+
+                setModalEditActive(false);
+                setUserEdit(null);
+
+              } }>Update</button>
             </div>
           </div>
         })()

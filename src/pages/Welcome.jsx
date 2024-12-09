@@ -18,10 +18,20 @@ export default function Welcome() {
     </div>
     <div className="scene"></div>
     <div className="action-button">
-      <Link to="/play" className="button-image"><img src={ buttonPlay } /></Link>
+      {
+        user && 
+        (({ turn }) => {
+          return (turn > 0 
+            ? <Link to="/play" className="button-image"><img src={ buttonPlay } /></Link> 
+            : <div className="not-turn">
+              <strong>Hết lượt gòy bạn êy!!!</strong>
+              <small style={{ fontSize: `12px` }}>(Làm nhiệm vụ để lấy thêm lượt chơi!!! coming soon)</small>
+            </div>)
+        })(user)
+      }
     </div>
     <div className="welcome-footer">
-      {
+      { 
         user && <UserFooter user={ user } />
       }
     </div>

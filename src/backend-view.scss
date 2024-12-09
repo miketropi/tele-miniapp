@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Jost:wght@100..900&family=Outfit:wght@100..900&display=swap');
 
+body, html {
+  background: white;
+}
+
 .backend-view {
   font-family: "Jost", sans-serif;
   font-optical-sizing: auto;
@@ -90,6 +94,8 @@ fieldset {
     padding: .5em;
     border: solid 1px #eee;
     box-sizing: border-box;
+    background: #fafafa;
+    color: black;
   }
 }
 

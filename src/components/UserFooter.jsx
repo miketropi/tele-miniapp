@@ -8,7 +8,10 @@ export default function UserFooter({ user }) {
         <span>{ first_name } { last_name }</span>
       </li>
       <li>
-        Lượt chơi còn lại { user.turn }  
+        Lượt còn lại { user.turn }  
+      </li>
+      <li>
+        Point { user.point }  
       </li>
     </ul>
   </div>
