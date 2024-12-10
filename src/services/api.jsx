@@ -66,4 +66,21 @@ const listennerCollection = (collecton, callback) => {
   return unsubscribe;
 }
 
-export { getUsers, getUser, addUser, findUserByTeleID, updateUser, listennerDoc, listennerCollection }
+const getSettings = async () => {
+  const docRef = doc(db, 'settings', 'global_settings')
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    let res = docSnap.data();
+    res.__id = docSnap.id;
+    return res;
+  } else {
+    return false;
+  }
+}
+
+const onSaveSettings = async (id, data) => {
+  const docRef = collection(db, 'settings');
+  await setDoc(doc(docRef, id), data, { merge: true });
+}
+
+export { getUsers, getUser, addUser, findUserByTeleID, updateUser, listennerDoc, listennerCollection, getSettings, onSaveSettings }

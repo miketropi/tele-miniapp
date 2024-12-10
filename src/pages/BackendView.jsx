@@ -2,6 +2,7 @@ import '../backend-view.scss';
 import { BackendViewContextProvider, useBackendViewContext } from '../context/BackendViewContext';
 import UsersTableList from '../components/UsersTableList';
 import UserEditModal from '../components/UserEditModal';
+import GameSettings from '../components/GameSettings';
 
 const BackendView = () => {
   const { version } = useBackendViewContext();
@@ -11,6 +12,8 @@ const BackendView = () => {
       <div className="heading">
         <h2>Backend View</h2>
       </div>
+      <GameSettings />
+      <div style={{ margin: `3em 0 2em`, borderBottom: 'solid 1px #ddd' }}></div>
       <UsersTableList />
     </div>
 

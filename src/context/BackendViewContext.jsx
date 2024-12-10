@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { getUsers, getUser, addUser, findUserByTeleID, updateUser, listennerDoc, listennerCollection } from '../services/api';
+import { getUsers, getUser, addUser, findUserByTeleID, updateUser, listennerDoc, listennerCollection, getSettings, onSaveSettings } from '../services/api';
 
 const BackendViewContext = createContext(null);
 
@@ -7,33 +7,31 @@ const BackendViewContextProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [userEdit, setUserEdit] = useState(null);
   const [modalEditActive, setModalEditActive] = useState(false);
+  const [gameSettings, setGameSettings] = useState(null);
   
   const onGetUsers = async () => {
     const res = await getUsers();
     setUsers(res);
   }
 
+  const onGetGameSettings = async () => {
+    const res = await getSettings();
+    setGameSettings(res);
+    // console.log(res);
+  }
+
   useEffect(() => {
     onGetUsers();
-    // listennerCollection('tele_users', (data) => {
-    //   setUsers(data);
-    // })
+    onGetGameSettings();
   }, [])
-
-  // useEffect(() => {
-  //   if(userEdit == null) return;
-  //   const s = listennerDoc('tele_users', userEdit, (id, data) => {
-  //     console.log(id, data);
-  //   })
-
-  //   return () => {
-  //     s();
-  //   }
-  // }, [userEdit])
 
   const onUpdateUser = async (id, data) => {
     await updateUser(id, data);
     onGetUsers();
+  }
+
+  const onUpdateSettings = async (data) => {
+    await onSaveSettings('global_settings', data);
   }
 
   const value = {
@@ -41,9 +39,11 @@ const BackendViewContextProvider = ({ children }) => {
     users, setUsers,
     userEdit, setUserEdit,
     modalEditActive, setModalEditActive,
+    gameSettings, setGameSettings,
     fn: {
       onUpdateUser,
       onGetUsers,
+      onUpdateSettings,
     }
   }
 
